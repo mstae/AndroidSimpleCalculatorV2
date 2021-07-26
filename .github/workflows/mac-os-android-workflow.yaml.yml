@@ -29,5 +29,3 @@ jobs:
           disable-animations: true
           script: ./gradlew connectedCheck
           working-directory: ./SimpleCalculator/starter
-
-
