@@ -1,8 +1,8 @@
 name: Linux CI Workflow
 on: [push]
 jobs:
-  build-and-test:
-    name: Build and run tests
+  build-and-run-unit-test:
+    name: Build and run unit tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -18,42 +18,83 @@ jobs:
       - name: Unit tests
         run: ./gradlew testDebugUnitTest
         working-directory: ./SimpleCalculator/starter
-  
-  build-apk:
-      name: Generate apk
-      runs-on: ubuntu-latest
-      needs:
-        - build-and-test
-      steps:
-      - uses: actions/checkout@v1
-      - name: Setup JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-        
+
+  build-and-run-ui-test:
+    name: Build and run UI tests
+    runs-on: macos-latest # Switched to macOS
+    steps:
+      - uses: actions/checkout@v2
+      - name: Print contents in current directory
+        run: ls -ale
+
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
         working-directory: ./SimpleCalculator/starter
 
-      - name: Generate apk
-        run: ./gradlew assembleDebug
+      - name: Run unit tests
+        run: ./gradlew testDebugUnitTest
         working-directory: ./SimpleCalculator/starter
 
-      - name: Upload apk
-        uses: actions/upload-artifact@v2
+      - name: Run instrumentation tests
+        uses: reactivecircus/android-emulator-runner@v2
         with:
-          name: debug apk
-          path: ./SimpleCalculator/starter/app/build/outputs/apk/debug/app-debug.apk
+          api-level: 29
+          arch: x86
+          profile: Nexus 6
+          avd-name: test
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: ./gradlew connectedCheck
+          working-directory: ./SimpleCalculator/starter
 
-      - name: Upload artefact to App Center
-        uses: wzieba/AppCenter-Github-Action@v1
-        with:
-          appName: taeyh/AndroidSimpleCalculator
-          token: ${{ secrets.APP_CENTER_TOKEN }}
-          group: Collaborators
-          file: ./SimpleCalculator/starter/app/build/outputs/apk/debug/app-debug.apk
-          notifyTesters: true
-          debug: false
+  build-apk:
+    name: Generate apk file
+    runs-on: ubuntu-latest
+    needs: [build-and-run-unit-test,build-and-run-ui-test]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+      
+    - name: Change wrapper permissions
+      run: chmod +x ./gradlew
+      working-directory: ./SimpleCalculator/starter
+
+    - name: Generate apk
+      run: ./gradlew assembleDebug
+      working-directory: ./SimpleCalculator/starter
+
+  upload-apk: 
+    name: Generate apk file
+    runs-on: ubuntu-latest
+    needs: 
+      - build-apk
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+
+    # Upload generated APK file as a GitHub artifact
+    - name: Upload apk
+      uses: actions/upload-artifact@v2
+      with:
+        name: debug apk
+        path: ./SimpleCalculator/starter/app/build/outputs/apk/debug/app-debug.apk
+
+    # Upload generated APK file to App Center
+    - name: Upload apk file to App Center
+      uses: wzieba/AppCenter-Github-Action@v1
+      with:
+        appName: taeyh/AndroidSimpleCalculator
+        token: ${{ secrets.APP_CENTER_TOKEN }}
+        group: Collaborators
+        file: ./SimpleCalculator/starter/app/build/outputs/apk/debug/app-debug.apk
+        notifyTesters: true
+        debug: false
 
 
 
