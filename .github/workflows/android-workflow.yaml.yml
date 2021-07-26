@@ -45,15 +45,15 @@ jobs:
           name: debug apk
           path: ./SimpleCalculator/starter/app/build/outputs/apk/debug/app-debug.apk
 
-      - name: upload artefact to App Center
-        uses: wzieba/AppCenter-Github-Action@v1
-        with:
-          appName: taeyh/AndroidSimpleCalculator
-          token: ${{ secrets.APP_CENTER_TOKEN }}
-          group: Collaborators
-          file: ./SimpleCalculator/starter/app/build/outputs/apk/debug/app-debug.apk
-          notifyTesters: true
-          debug: false
+      # - name: upload artefact to App Center
+      #   uses: wzieba/AppCenter-Github-Action@v1
+      #   with:
+      #     appName: taeyh/AndroidSimpleCalculator
+      #     token: ${{ secrets.APP_CENTER_TOKEN }}
+      #     group: Collaborators
+      #     file: ./SimpleCalculator/starter/app/build/outputs/apk/debug/app-debug.apk
+      #     notifyTesters: true
+      #     debug: false
 
 
 
