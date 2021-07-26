@@ -10,6 +10,10 @@ jobs:
       - name: Print contents in current directory
         run: ls -ale
 
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+        working-directory: ./SimpleCalculator/starter
+
       - name: Run unit tests
         run: ./gradlew testDebugUnitTest
         working-directory: ./SimpleCalculator/starter
@@ -24,6 +28,6 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: ./gradlew connectedCheck
-          # working-directory: ./SimpleCalculator/starter
+          working-directory: ./SimpleCalculator/starter
 
 
