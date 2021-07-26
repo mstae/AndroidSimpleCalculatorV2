@@ -1,5 +1,5 @@
 name: mac os CI Workflow
-on: [pull_request]
+on: [push]
 jobs:
   build-and-test:
     name: Build and run tests
