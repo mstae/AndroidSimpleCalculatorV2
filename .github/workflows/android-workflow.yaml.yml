@@ -67,7 +67,7 @@ jobs:
       working-directory: ./SimpleCalculator/starter
 
   upload-apk: 
-    name: Generate apk file
+    name: Upload generated apk file artifact to GitHub & App Center
     runs-on: ubuntu-latest
     needs: 
       - build-apk
