@@ -64,7 +64,7 @@ class CalculatorEngineTest {
 
     // 20 + 10
     engine.calculate(10.toString())
-    assertThat(engine.result, equalTo(30.toString()))
+    assertThat(engine.result, equalTo(20.toString()))
   }
 
   @Test
