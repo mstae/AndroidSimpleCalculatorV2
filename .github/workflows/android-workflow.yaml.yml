@@ -19,14 +19,13 @@ jobs:
         run: ./gradlew testDebugUnitTest
         working-directory: ./SimpleCalculator/starter
 
-      - name: Create issue if unit test fails
+      - name: Create GitHub issue if unit test fails
         if: ${{ failure() }}
         uses: peter-evans/create-issue-from-file@v2
         with: 
           title: Unit Test Failed
           content-filepath: ./SimpleCalculator/starter/issuecontent.md
           labels: error
-          assignees: mstae
 
   build-and-run-ui-test:
     name: Build and run UI tests
