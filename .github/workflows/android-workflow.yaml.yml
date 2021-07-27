@@ -1,4 +1,4 @@
-name: Linux CI Workflow
+name: CI Workflow
 on: [push]
 jobs:
   build-and-run-unit-test:
@@ -18,6 +18,15 @@ jobs:
       - name: Unit tests
         run: ./gradlew testDebugUnitTest
         working-directory: ./SimpleCalculator/starter
+
+      - name: Create issue unit test failure
+        if: ${{ failure() }}
+        uses: peter-evans/create-issue-from-file@v2
+        with: 
+          title: Unit Test Failed
+          content-filepath: ./SimpleCalculator/starter/issuecontent.md
+          labels: error
+          assignees: mstae
 
   build-and-run-ui-test:
     name: Build and run UI tests
