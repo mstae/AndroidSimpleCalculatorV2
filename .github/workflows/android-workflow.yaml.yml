@@ -19,7 +19,7 @@ jobs:
         run: ./gradlew testDebugUnitTest
         working-directory: ./SimpleCalculator/starter
 
-      - name: Create issue unit test failure
+      - name: Create issue if unit test fails
         if: ${{ failure() }}
         uses: peter-evans/create-issue-from-file@v2
         with: 
